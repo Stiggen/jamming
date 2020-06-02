@@ -9,41 +9,19 @@ import Spotify from '../../util/Spotify';
 class App extends React.Component {
     constructor(props){
         super(props);
-        this.state = {searchResults:[],
+        this.state = {
+                      searchResults:[],
                       playlistName: 'Rock',
                       playlistTracks: [{
                         name: '',
                         artist:'' ,
                         album:'' ,
                         id : ''
-                        }
-                    ]};
-           /*Hard(ROCK!) coded tracks
-            [
-            {
-              name:'Ramble On', 
-              artist:'Led Zeppelin', 
-              album: 'Led Zeppelin II', 
-              id: 'Track 4',
-            },
-            {
-              name:'Good Times Bad Times',
-              artist:'Led Zeppelin',
-              album: 'Led Zeppelin',
-              id: 'Track 1'
-            },
-            {
-              name:'Whole Lotta Love',
-              artist:'Led Zeppelin',
-              album:'Led Zeppelin',
-              id: 'Track 2'
-            }
-        ],
-        */
-            
+                        }]
+                  };     
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
-    this.updatePlayistName = this.updatePlayistName.bind(this);
+    this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
     }
@@ -60,19 +38,23 @@ class App extends React.Component {
             savedTrack.id !==track.id)}});
         }
     
-    updatePlayistName(name){
+    updatePlaylistName(name){
       this.setState({playlistName:name});
     }
 
     //Create an array of URI numbers from playlistTracks to be 
     //sent to Spotify
-    savePlaylist(){
-        let trackURIs = [this.state.playlistTracks.map()];
+    savePlaylist(name, uriTracks){
+      let trackURIs = this.state.playlistTracks.map(track=>track.uri);
+      Spotify.savePlaylist(this.state.playlistName, trackURIs)
+      .then(()=>{
+      this.setState({playlistName:'New Playlist',  playlistTracks:[]})
+      });
     }
 
     search(term){
         Spotify.search(term)
-        .then(searchResults=>this.setState({searchResults:searchResults}));
+        .then(searchResults=> this.setState({searchResults:searchResults}));
     }
 
     //Pass Search Results (currently hardcoded) and onAdd method to SearchResults component
@@ -95,7 +77,7 @@ class App extends React.Component {
                 playlistName={this.state.playlistName} 
                 playlistTracks={this.state.playlistTracks}
                 onRemove={this.removeTrack}
-                onNameChange= {this.updatePlayistName}
+                onNameChange= {this.updatePlaylistName}
                 onSave= {this.savePlaylist}
                 />
               </div>
