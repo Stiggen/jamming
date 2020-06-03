@@ -1,3 +1,6 @@
+// https://developer.spotify.com/dashboard/applications
+
+
 const clientId = 'bc96bd5bc20d425c84cfebd5c80f67b0';
 const redirectUri = "http://localhost:3000/";
 let accessToken;
