@@ -11,13 +11,8 @@ class App extends React.Component {
         super(props);
         this.state = {
                       searchResults:[],
-                      playlistName: 'Rock',
-                      playlistTracks: [{
-                        name: '',
-                        artist:'' ,
-                        album:'' ,
-                        id : ''
-                        }]
+                      playlistName: 'New Playlist',
+                      playlistTracks: []
                   };     
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -27,15 +22,28 @@ class App extends React.Component {
     }
     //functionality to add a track to the Playlist
     addTrack(track){
-       if(!this.state.playlistTracks.find(savedTrack=> savedTrack.id === track.id)){
+      let tracks = this.state.playlistTracks;
+      if(tracks.find(savedTrack=>savedTrack.id=== track.id)){
+        return; 
+      } 
+      else{
+        tracks.push(track);
+        this.setState({playlistTracks:tracks})
+      /*More complicated method using callback function in setState and concat() on playlistTracks
+        if(!this.state.playlistTracks.find(savedTrack=> savedTrack.id === track.id)){
         this.setState((prevState)=>{return {playlistTracks:prevState.playlistTracks.concat(track)}});
+      */
       }
     }
     //functionality to remove a track to the Playlist. Was previously removing all tracks
     // but selected track so I did the not (!) equal to to fix.
     removeTrack(track){
+      let tracks = this.state.playlistTracks;
+      tracks = tracks.filter(savedTrack=>savedTrack.id !==track.id);
+      this.setState({playlistTracks:tracks});
+      /* More compllicated method using a callback function in setState
         this.setState((prevState)=>{return{playlistTracks:prevState.playlistTracks.filter(savedTrack=> 
-            savedTrack.id !==track.id)}});
+            savedTrack.id !==track.id)}}); */
         }
     
     updatePlaylistName(name){
@@ -43,8 +51,8 @@ class App extends React.Component {
     }
 
     //Create an array of URI numbers from playlistTracks to be 
-    //sent to Spotify
-    savePlaylist(name, uriTracks){
+    //sent to Spotify and saved under the input name.  
+    savePlaylist(){
       let trackURIs = this.state.playlistTracks.map(track=>track.uri);
       Spotify.savePlaylist(this.state.playlistName, trackURIs)
       .then(()=>{

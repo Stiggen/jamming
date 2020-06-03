@@ -14,7 +14,7 @@ const Spotify = {
     else if(urlAccessToken && urlExpiresIn){
       accessToken = urlAccessToken[1];
       expiresIn = urlExpiresIn[1];
-      window.setTimeout(()=>accessToken = '', expiresIn * 1000);
+      window.setTimeout(()=>accessToken = '', expiresIn * 10000);
       window.history.pushState('Acess Token', null, '/');
     }
     else{
@@ -22,8 +22,8 @@ const Spotify = {
     }
   },
   search(term){
-   const accessToken = this.getAccessToken();
-   const searchUrl=`https://api.spotify.com/v1/search?type=track&q=${term.replace(' ', '%20')}`;
+  const accessToken = this.getAccessToken();
+   const searchUrl=`https://api.spotify.com/v1/search?type=track&q=${term}`;
    return fetch(searchUrl,{headers:{Authorization:`Bearer ${accessToken}`}})
     .then((response)=>response.json())
     .then((jsonResponse)=>{
@@ -47,7 +47,7 @@ const Spotify = {
       return ;
     }
     else {
-      accessToken = this.getAccessToken();
+     const accessToken = this.getAccessToken();
       let headers = {Authorization: `Bearer ${accessToken}`};
       let userId ; 
       
@@ -62,12 +62,12 @@ const Spotify = {
       .then((jsonResponse)=>{
         let playlistId = jsonResponse.id;
         return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
-       {headers:{headers}, method: 'POST', body:JSON.stringify({uris:uriTracks})})
+       {headers:headers, method: 'POST', body:JSON.stringify({uris:uriTracks})})
       })
-      .then((response)=> {return response.json();})
+      /*.then((response)=> {return response.json();})
       .then((jsonResponse)=>{
-        const playlistId = jsonResponse.snapshot_id;
-        return playlistId;});
+        let playlistId = jsonResponse.snapshot_id;
+        return playlistId;}); */
     }
   }
 }
