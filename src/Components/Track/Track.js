@@ -25,20 +25,21 @@ class Track extends React.Component {
         return <a className='Track-action' onClick={this.addTrack}>+</a>;
         } else if(this.props.onRemove){
             return <a className='Track-action' onClick={this.removeTrack}>-</a>;
+        }    
+      }
+      songPreview(){
+        if(this.props.track.preview){
+          return <video className="Track-sample" controls src={this.props.track.preview} type="audio/mpeg"></video>;
         }
-  /*       <div className='Track-action'>
-           <button>{this.state.isRemoval ? '+': '-'}</button>
-        </div>
-  */          
-            
-    }
-    
+        else return;
+      }
     //Render track method
     render() {
         return (
             <div className="Track">
               <div className="Track-information">
                  <h3>{this.props.track.name}</h3>
+                  <div className="Track-sample">{this.songPreview()}</div>
                  <p>{this.props.track.artist} | {this.props.track.album}</p>
               </div>
               <button className='Track-action'>{this.renderAction()}</button>
